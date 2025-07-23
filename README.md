@@ -58,8 +58,8 @@
 
 ## 🧑‍💻 제작자
 
-- 👨‍💻 [Your Name or GitHub Link]
-- ✉️ Contact: [email@example.com]
+- 👨‍💻 [[Your Name or GitHub Link](https://github.com/TaeJinKim0930)]
+- ✉️ Contact: [tjmax0930@gmail..com]
 
 ---
 
