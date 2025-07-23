@@ -3,7 +3,8 @@
 📚 **정보처리기사 필기시험 대비**를 위한 HTML 기반 퀴즈 시스템입니다.  
 문제는 JSON 데이터로 관리되며, 퀴즈를 풀고 정답을 확인하고 점수를 자동 채점할 수 있습니다.
 
-![screenshot](./screenshot.png) <!-- 원하시면 스크린샷 이미지 넣으세요 -->
+<img width="887" height="778" alt="image" src="https://github.com/user-attachments/assets/c1869c1b-1dbd-4722-bb09-55d89ddb4d2e" />
+
 
 ---
 
@@ -28,3 +29,40 @@
 
 ## 📂 프로젝트 구조
 
+```
+
+📁 project-root/
+├── index.html          # 메인 퀴즈 페이지
+├── quizData.js         # 문제 데이터(JSON 형식의 JS 파일)
+└── README.md           # 이 설명서 파일
+
+```
+
+---
+
+## 📌 기술 스택
+
+- HTML5 / JavaScript (Vanilla JS)
+- 문제 랜더링 및 채점은 JS로 구현
+- 외부 라이브러리 없이 순수 HTML+JS 기반
+
+---
+
+## ✍️ 기여 방법
+
+1. fork 후 브랜치 생성  
+2. `quizData.js` 또는 `index.html` 수정  
+3. PR 보내주시면 반영 검토하겠습니다!
+
+---
+
+## 🧑‍💻 제작자
+
+- 👨‍💻 [Your Name or GitHub Link]
+- ✉️ Contact: [email@example.com]
+
+---
+
+## 📜 라이선스
+
+MIT License
