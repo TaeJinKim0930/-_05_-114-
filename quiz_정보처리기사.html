@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>정보처리기사 퀴즈</title>
+  <style>
+    body { font-family: sans-serif; background: #f5f5f5; padding: 20px; }
+    .question { background: white; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 20px; padding: 16px; }
+    .question h3 { margin-top: 0; }
+    .options label { display: block; margin: 5px 0; cursor: pointer; }
+    .answer { display: none; margin-top: 10px; color: #c00; }
+    .correct { color: red; font-weight: bold; }
+    #score { font-size: 20px; font-weight: bold; margin-top: 30px; }
+    button { margin-top: 10px; padding: 6px 12px; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <div id="quiz-container"></div>
+
+  <button id="check-all">결과 보기</button>
+  <div id="score"></div>
+
+  <script>
+    const quizData = window.quizData || [
+  {
+    "number": 1,
+    "question": "소프트웨어 공학의 기본 원칙이라고 볼 수 없는 것은?",
+    "options": [
+      "품질 높은 소프트웨어 상품 개발",
+      "지속적인 검증 시행",
+      "결과에 대한 명확한 기록 유지",
+      "최대한 많은 인력 투입"
+    ],
+    "answer": 4,
+    "explanation": "소프트웨어 공학의 기본 원칙은 효율적인 인력 투입입니다. 많은 인력이 항상 좋은 건 아닙니다."
+  },
+  {
+    "number": 2,
+    "question": "시스템의 구성 요소로 볼 수 없는 것은?",
+    "options": [
+      "Process",
+      "Feedback",
+      "Maintenance",
+      "Control"
+    ],
+    "answer": 3,
+    "explanation": "시스템의 구성 요소는 입력, 처리, 출력, 제어, 피드백입니다. Maintenance는 포함되지 않습니다."
+  },
+  {
+    "number": 3,
+    "question": "요구사항 정의 및 분석 설계의 결과물을 표현하기 위한 모델링 과정에서 사용되는 다이어그램이 아닌 것은?",
+    "options": [
+      "Data Flow Diagram",
+      "UML Diagram",
+      "E-R Diagram",
+      "AVL Diagram"
+    ],
+    "answer": 4,
+    "explanation": "AVL은 트리 자료구조이며 요구사항 모델링 다이어그램과는 관련 없습니다."
+  },
+  {
+    "number": 4,
+    "question": "알맞은 말을 괄호 안에 넣은 것은?",
+    "options": [
+      "데이터베이스 시스템 → ( ) → 응용 프로그램",
+      "파일 처리 시스템 → ( ) → 응용 프로그램",
+      "데이터베이스 시스템 → 운영체제 → ( )"
+    ],
+    "answer": "데이터베이스 시스템 → DBMS → 응용 프로그램",
+    "explanation": "DBMS는 데이터베이스 시스템과 응용 프로그램 사이에서 데이터를 관리하는 소프트웨어입니다."
+  },
+  {
+    "number": 5,
+    "question": "데이터베이스의 특징으로 거리가 먼 것은?",
+    "options": [
+      "데이터의 무결성 유지",
+      "데이터의 종속성 강화",
+      "데이터의 중복 최소화",
+      "데이터의 일관성 유지"
+    ],
+    "answer": "데이터의 종속성 강화",
+    "explanation": "데이터베이스는 데이터의 종속성을 줄이고 독립성을 강화하는 것이 목표입니다."
+  },
+  {
+    "number": 6,
+    "question": "데이터 독립성과 가장 관계가 깊은 것은?",
+    "options": [
+      "동시성 제어",
+      "스키마",
+      "무결성 제약 조건",
+      "트랜잭션"
+    ],
+    "answer": "스키마",
+    "explanation": "스키마는 데이터의 구조를 정의하며, 논리적/물리적 독립성을 제공하는 핵심 요소입니다."
+  },
+  {
+    "number": 7,
+    "question": "다음 중 데이터베이스 언어에 해당하지 않는 것은?",
+    "options": [
+      "DDL",
+      "DML",
+      "DCL",
+      "DSL"
+    ],
+    "answer": "DSL",
+    "explanation": "DSL은 도메인 특정 언어(Domain Specific Language)로서, 데이터베이스 언어에는 포함되지 않습니다."
+  },
+  {
+    "number": 8,
+    "question": "SQL에서 데이터를 조작하기 위한 언어는?",
+    "options": [
+      "DCL",
+      "DDL",
+      "DML",
+      "SDL"
+    ],
+    "answer": "DML",
+    "explanation": "DML은 데이터 조회, 삽입, 수정, 삭제를 위한 SQL의 조작 언어입니다."
+  },
+  {
+    "number": 9,
+    "question": "트랜잭션의 성질 중 '일관성'에 해당하는 설명은?",
+    "options": [
+      "트랜잭션은 전부 수행되거나 전혀 수행되지 않아야 한다.",
+      "트랜잭션이 실행되기 전과 실행된 후의 데이터베이스는 항상 일관되어야 한다.",
+      "동시에 여러 트랜잭션이 실행되면 데이터가 꼬일 수 있다.",
+      "트랜잭션 실행 중 오류가 발생하면 복구해야 한다."
+    ],
+    "answer": "트랜잭션이 실행되기 전과 실행된 후의 데이터베이스는 항상 일관되어야 한다.",
+    "explanation": "일관성은 데이터베이스가 트랜잭션 처리 전후에 무결성 제약 조건을 항상 만족해야 함을 의미합니다."
+  },
+  {
+    "number": 10,
+    "question": "트랜잭션의 특성 중 원자성(Atomicity)에 대한 설명으로 옳은 것은?",
+    "options": [
+      "트랜잭션 수행 결과는 항상 일관성을 유지해야 한다.",
+      "트랜잭션은 고립되어 수행되어야 한다.",
+      "트랜잭션은 전부 수행되거나 전혀 수행되지 않아야 한다.",
+      "성공적으로 완료된 트랜잭션의 결과는 영구적으로 저장되어야 한다."
+    ],
+    "answer": "트랜잭션은 전부 수행되거나 전혀 수행되지 않아야 한다.",
+    "explanation": "원자성은 트랜잭션의 모든 연산이 완전히 수행되거나 전혀 수행되지 않아야 함을 의미합니다."
+  },
+  {
+    "number": 11,
+    "question": "데이터베이스 설계 단계 중 개념적 설계에 해당하는 것은?",
+    "options": [
+      "사용자 요구사항 분석",
+      "ER 모델 작성",
+      "정규화 수행",
+      "물리적 저장장치 설계"
+    ],
+    "answer": "ER 모델 작성",
+    "explanation": "개념적 설계는 ER 다이어그램 등을 통해 데이터 구조를 논리적으로 정의하는 단계입니다."
+  },
+  {
+    "number": 12,
+    "question": "관계형 데이터 모델의 구성 요소가 아닌 것은?",
+    "options": [
+      "튜플(Tuple)",
+      "도메인(Domain)",
+      "스키마(Schema)",
+      "트리(Tree)"
+    ],
+    "answer": "트리(Tree)",
+    "explanation": "트리는 계층형 모델에서 사용되는 구조이며, 관계형 모델의 구성 요소는 아닙니다."
+  },
+  {
+    "number": 13,
+    "question": "다음 중 제1정규형(1NF)의 특징으로 옳은 것은?",
+    "options": [
+      "속성 값이 원자값이어야 한다.",
+      "이행적 종속 제거",
+      "부분 함수 종속 제거",
+      "다치 종속 제거"
+    ],
+    "answer": "속성 값이 원자값이어야 한다.",
+    "explanation": "제1정규형은 모든 속성 값이 더 이상 나눌 수 없는 원자값이어야 한다는 특징을 가집니다."
+  },
+  {
+    "number": 14,
+    "question": "SQL문에서 테이블의 구조를 변경할 때 사용하는 명령어는?",
+    "options": [
+      "SELECT",
+      "INSERT",
+      "ALTER",
+      "UPDATE"
+    ],
+    "answer": "ALTER",
+    "explanation": "ALTER 명령어는 테이블의 구조(열 추가, 삭제 등)를 변경할 때 사용됩니다."
+  },
+  {
+    "number": 15,
+    "question": "데이터베이스 트랜잭션에서 병행 제어가 필요한 이유는?",
+    "options": [
+      "성능 향상",
+      "데이터 중복 방지",
+      "무결성 보장",
+      "동시 수행되는 트랜잭션 간의 충돌 방지"
+    ],
+    "answer": "동시 수행되는 트랜잭션 간의 충돌 방지",
+    "explanation": "병행 제어는 여러 트랜잭션이 동시에 수행될 때 발생할 수 있는 충돌을 방지하기 위해 필요합니다."
+  },
+  {
+    "number": 16,
+    "question": "데이터베이스 설계 순서로 알맞은 것은?",
+    "options": [
+      "논리적 설계 → 개념적 설계 → 물리적 설계",
+      "개념적 설계 → 논리적 설계 → 물리적 설계",
+      "물리적 설계 → 논리적 설계 → 개념적 설계",
+      "개념적 설계 → 물리적 설계 → 논리적 설계"
+    ],
+    "answer": "개념적 설계 → 논리적 설계 → 물리적 설계",
+    "explanation": "DB 설계는 추상화 수준에 따라 개념 → 논리 → 물리 설계 순으로 진행됩니다."
+  },
+  {
+    "number": 17,
+    "question": "뷰(View)에 대한 설명으로 틀린 것은?",
+    "options": [
+      "실제 데이터를 저장하지 않는다.",
+      "테이블과 같은 구조를 가진다.",
+      "뷰를 통해 데이터를 삽입할 수 있다.",
+      "논리적 테이블이다."
+    ],
+    "answer": "뷰를 통해 데이터를 삽입할 수 있다.",
+    "explanation": "일부 경우를 제외하고 일반적으로 뷰를 통해 데이터를 삽입할 수 없습니다."
+  },
+  {
+    "number": 18,
+    "question": "다음 중 이상(Anomaly)의 유형이 아닌 것은?",
+    "options": [
+      "삽입 이상",
+      "삭제 이상",
+      "갱신 이상",
+      "정렬 이상"
+    ],
+    "answer": "정렬 이상",
+    "explanation": "정렬 이상은 이상 현상의 유형에 해당하지 않습니다."
+  },
+  {
+    "number": 19,
+    "question": "다음 중 관계 대수 연산에 해당하지 않는 것은?",
+    "options": [
+      "SELECT",
+      "PROJECT",
+      "JOIN",
+      "MERGE"
+    ],
+    "answer": "MERGE",
+    "explanation": "MERGE는 SQL의 DML에 해당하며 관계 대수 연산에는 포함되지 않습니다."
+  },
+  {
+    "number": 20,
+    "question": "SQL에서 특정 조건에 맞는 그룹의 집계 결과만 조회하고 싶을 때 사용하는 절은?",
+    "options": [
+      "WHERE",
+      "GROUP BY",
+      "HAVING",
+      "ORDER BY"
+    ],
+    "answer": "HAVING",
+    "explanation": "HAVING 절은 GROUP BY 절로 묶은 그룹에 조건을 지정할 때 사용됩니다."
+  },
+  {
+    "number": 21,
+    "question": "무결성 제약조건 중 NOT NULL의 의미는?",
+    "options": [
+      "중복된 값을 허용하지 않는다.",
+      "NULL 값을 허용하지 않는다.",
+      "기본키로 설정된다.",
+      "외래키로 설정된다."
+    ],
+    "answer": "NULL 값을 허용하지 않는다.",
+    "explanation": "NOT NULL 제약조건은 해당 속성에 NULL 값을 허용하지 않음을 의미합니다."
+  },
+  {
+    "number": 22,
+    "question": "SQL에서 데이터를 정렬할 때 사용하는 키워드는?",
+    "options": [
+      "ORDER BY",
+      "GROUP BY",
+      "HAVING",
+      "SORT"
+    ],
+    "answer": "ORDER BY",
+    "explanation": "ORDER BY는 SQL에서 결과를 오름차순 또는 내림차순으로 정렬하는 데 사용됩니다."
+  },
+  {
+    "number": 23,
+    "question": "교착 상태(Deadlock)를 방지하는 방법으로 옳지 않은 것은?",
+    "options": [
+      "락을 순서대로 획득",
+      "타임아웃 설정",
+      "공유 자원 최소화",
+      "트랜잭션을 무제한 대기시킴"
+    ],
+    "answer": "트랜잭션을 무제한 대기시킴",
+    "explanation": "무제한 대기는 오히려 교착 상태를 유발할 수 있으므로 방지책이 아닙니다."
+  },
+  {
+    "number": 24,
+    "question": "2단계 로킹 기법(Two-phase Locking)의 목적은?",
+    "options": [
+      "데이터 중복 제거",
+      "일관성 있는 백업",
+      "동시성 제어와 데이터 일관성 유지",
+      "성능 향상"
+    ],
+    "answer": "동시성 제어와 데이터 일관성 유지",
+    "explanation": "2단계 로킹은 동시성 제어의 한 방법으로 데이터의 일관성을 보장합니다."
+  },
+  {
+    "number": 25,
+    "question": "정규화를 수행하는 가장 큰 목적은?",
+    "options": [
+      "속성 수를 줄이기 위해",
+      "이상 현상을 방지하기 위해",
+      "뷰 생성을 쉽게 하기 위해",
+      "중복된 데이터를 허용하기 위해"
+    ],
+    "answer": "이상 현상을 방지하기 위해",
+    "explanation": "정규화는 삽입, 삭제, 갱신 이상 등 이상 현상을 방지하기 위해 수행됩니다."
+  },
+  {
+    "number": 26,
+    "question": "SQL에서 새로운 레코드를 추가할 때 사용하는 명령은?",
+    "options": [
+      "INSERT",
+      "UPDATE",
+      "DELETE",
+      "ALTER"
+    ],
+    "answer": "INSERT",
+    "explanation": "INSERT는 새로운 데이터를 테이블에 추가할 때 사용됩니다."
+  },
+  {
+    "number": 27,
+    "question": "관계형 데이터베이스에서 기본키(Primary Key)의 역할은?",
+    "options": [
+      "데이터를 외부와 연결한다.",
+      "데이터의 순서를 정한다.",
+      "튜플을 고유하게 식별한다.",
+      "데이터를 그룹화한다."
+    ],
+    "answer": "튜플을 고유하게 식별한다.",
+    "explanation": "기본키는 테이블의 각 튜플을 고유하게 식별하기 위해 사용됩니다."
+  },
+  {
+    "number": 28,
+    "question": "스키마(Schema)에 대한 설명으로 가장 적절한 것은?",
+    "options": [
+      "데이터의 물리적 저장 구조",
+      "데이터베이스 사용자의 이름",
+      "데이터베이스 구조와 제약조건의 정의",
+      "데이터 저장 공간의 이름"
+    ],
+    "answer": "데이터베이스 구조와 제약조건의 정의",
+    "explanation": "스키마는 데이터베이스의 논리적 구조와 제약조건 등을 정의한 것입니다."
+  },
+  {
+    "number": 29,
+    "question": "다음 중 ER 모델의 구성 요소가 아닌 것은?",
+    "options": [
+      "개체(Entity)",
+      "관계(Relationship)",
+      "속성(Attribute)",
+      "정규화(Normalization)"
+    ],
+    "answer": "정규화(Normalization)",
+    "explanation": "정규화는 ER 모델링 이후 수행되는 관계형 모델의 설계 단계입니다."
+  },
+  {
+    "number": 30,
+    "question": "데이터 무결성 제약 조건 중 외래키(Foreign Key)의 역할은?",
+    "options": [
+      "유일성 유지",
+      "데이터 삽입 방지",
+      "다른 테이블의 기본키를 참조",
+      "속성 이름 제한"
+    ],
+    "answer": "다른 테이블의 기본키를 참조",
+    "explanation": "외래키는 다른 테이블의 기본키를 참조해 두 테이블 간 관계를 정의합니다."
+  },
+  {
+    "number": 31,
+    "question": "윈도우 XP의 시스템 구성 요소에 해당되지 않는 것은?",
+    "options": [
+      "제어판(Control Panel)",
+      "장치 관리자(Device Manager)",
+      "인터넷 익스플로러(Internet Explorer)",
+      "Microsoft Office"
+    ],
+    "answer": 4,
+    "explanation": "Microsoft Office는 애플리케이션 프로그램이며, 운영체제 구성 요소가 아님."
+  },
+  {
+    "number": 32,
+    "question": "개체에 포함된 데이터를 축약하거나 요약하는 명령은?",
+    "options": [
+      "요약(Summarize)",
+      "정렬(Sort)",
+      "필터(Filter)",
+      "합계(Total)"
+    ],
+    "answer": 1,
+    "explanation": "요약(Summarize)은 개체에 포함된 데이터의 핵심 내용을 축약하는 기능."
+  },
+  {
+    "number": 33,
+    "question": "컴퓨터 시스템에서 입출력 장치의 동작을 제어하는 장치는?",
+    "options": [
+      "제어 장치",
+      "연산 장치",
+      "기억 장치",
+      "버스"
+    ],
+    "answer": 1,
+    "explanation": "제어 장치는 시스템의 동작을 지시하고 조정함."
+  },
+  {
+    "number": 34,
+    "question": "파일 구조에서 인덱스를 이용하여 데이터를 액세스하는 방식은?",
+    "options": [
+      "순차 파일",
+      "직접 파일",
+      "색인 순차 파일",
+      "다중 파일"
+    ],
+    "answer": 3,
+    "explanation": "색인 순차 파일은 인덱스를 사용해 빠르게 원하는 레코드에 접근할 수 있음."
+  },
+  {
+    "number": 35,
+    "question": "관계 데이터베이스에서 사용되는 기본 용어가 아닌 것은?",
+    "options": [
+      "튜플(Tuple)",
+      "애트리뷰트(Attribute)",
+      "릴레이션(Relation)",
+      "레지스터(Register)"
+    ],
+    "answer": 4,
+    "explanation": "레지스터는 하드웨어에서 사용하는 용어이며 관계 데이터베이스 용어는 아님."
+  },
+  {
+    "number": 36,
+    "question": "운영체제에서 프로세스 상태가 아닌 것은?",
+    "options": [
+      "대기(wait)",
+      "실행(running)",
+      "정지(stopped)",
+      "저장(stored)"
+    ],
+    "answer": 4,
+    "explanation": "저장(stored)은 프로세스 상태로 분류되지 않음."
+  },
+  {
+    "number": 37,
+    "question": "정보보호의 3요소 중 기밀성(confidentiality)에 해당하는 것은?",
+    "options": [
+      "정보가 무단 변경되지 않도록 하는 것",
+      "정보에 인가된 사용자만 접근 가능한 것",
+      "정보를 언제든지 사용할 수 있는 것",
+      "정보의 흐름을 제어하는 것"
+    ],
+    "answer": 2,
+    "explanation": "기밀성은 인가된 사용자만 정보에 접근할 수 있도록 보장하는 것."
+  },
+  {
+    "number": 38,
+    "question": "LAN에서 충돌(Collision)을 감지하고 재전송하는 프로토콜은?",
+    "options": [
+      "CSMA/CD",
+      "PPP",
+      "HDLC",
+      "SLIP"
+    ],
+    "answer": 1,
+    "explanation": "CSMA/CD는 이더넷에서 충돌 감지 후 재전송을 처리하는 방식."
+  },
+  {
+    "number": 39,
+    "question": "프로그래밍 언어의 특징 중 절차적 프로그래밍에 해당하는 것은?",
+    "options": [
+      "계속해서 모듈화된 구성",
+      "이벤트 기반 처리",
+      "데이터 중심 설계",
+      "순차적 명령어 흐름"
+    ],
+    "answer": 4,
+    "explanation": "절차적 언어는 순차적 명령어 실행을 기반으로 함."
+  },
+  {
+    "number": 40,
+    "question": "소프트웨어 생명주기(SDLC)의 단계 중 시스템 구현 이후 단계는?",
+    "options": [
+      "요구 분석",
+      "설계",
+      "시험",
+      "운영 및 유지보수"
+    ],
+    "answer": 4,
+    "explanation": "시스템 구현 이후에는 운영 및 유지보수 단계가 이어짐."
+  },
+  {
+    "number": 41,
+    "question": "다음 중 운영체제의 기능으로 볼 수 없는 것은?",
+    "options": [
+      "프로세서 관리",
+      "기억장치 관리",
+      "입출력 관리",
+      "문서 편집"
+    ],
+    "answer": 4,
+    "explanation": "문서 편집은 애플리케이션 소프트웨어의 기능임."
+  },
+  {
+    "number": 42,
+    "question": "다음 중 네트워크 장비가 아닌 것은?",
+    "options": [
+      "라우터",
+      "허브",
+      "스위치",
+      "마우스"
+    ],
+    "answer": 4,
+    "explanation": "마우스는 입력 장치로 네트워크 장비가 아님."
+  },
+  {
+    "number": 43,
+    "question": "시분할 시스템의 특징으로 알맞은 것은?",
+    "options": [
+      "하나의 작업만 처리",
+      "동시에 여러 사용자 처리",
+      "하나의 사용자만 사용",
+      "오류율이 낮음"
+    ],
+    "answer": 2,
+    "explanation": "시분할은 CPU를 여러 사용자에게 시간 단위로 배분하여 동시에 처리함."
+  },
+  {
+    "number": 44,
+    "question": "다음 중 데이터베이스의 필수 요소가 아닌 것은?",
+    "options": [
+      "데이터",
+      "하드웨어",
+      "소프트웨어",
+      "프린터"
+    ],
+    "answer": 4,
+    "explanation": "프린터는 출력 장치이며 데이터베이스 구성 요소는 아님."
+  },
+  {
+    "number": 45,
+    "question": "논리 회로의 최소 단위를 나타내는 것은?",
+    "options": [
+      "비트",
+      "게이트",
+      "트랜지스터",
+      "바이트"
+    ],
+    "answer": 2,
+    "explanation": "게이트는 논리 연산을 수행하는 기본 단위 회로임."
+  },
+  {
+    "number": 46,
+    "question": "다음 중 바이러스의 전파 매체로 볼 수 없는 것은?",
+    "options": [
+      "인터넷",
+      "이메일",
+      "USB",
+      "키보드"
+    ],
+    "answer": 4,
+    "explanation": "키보드는 입력 장치로 바이러스 전파와 무관함."
+  },
+  {
+    "number": 47,
+    "question": "자료를 정렬하는 기본적인 방법이 아닌 것은?",
+    "options": [
+      "버블 정렬",
+      "선택 정렬",
+      "이진 정렬",
+      "삽입 정렬"
+    ],
+    "answer": 3,
+    "explanation": "이진 정렬은 일반적으로 사용되지 않는 용어임. 이진 탐색은 탐색 방법."
+  },
+  {
+    "number": 48,
+    "question": "다음 중 객체지향 프로그래밍 언어가 아닌 것은?",
+    "options": [
+      "C++",
+      "Java",
+      "Python",
+      "BASIC"
+    ],
+    "answer": 4,
+    "explanation": "BASIC은 절차적 언어이며 객체지향 기능이 없음."
+  },
+  {
+    "number": 49,
+    "question": "운영체제에서 프로세스 간 자원 충돌을 방지하기 위한 기법은?",
+    "options": [
+      "데드락 회피",
+      "교착 상태",
+      "스케줄링",
+      "인터럽트"
+    ],
+    "answer": 1,
+    "explanation": "데드락 회피는 자원 충돌을 방지하기 위한 운영체제의 기법."
+  },
+  {
+    "number": 50,
+    "question": "도스(DOS) 명령 중 외부 명령어는?",
+    "options": [
+      "DIR",
+      "COPY",
+      "DEL",
+      "CHKDSK"
+    ],
+    "answer": 4,
+    "explanation": "CHKDSK는 별도 파일로 존재하는 외부 명령어임."
+  },
+  {
+    number: 51,
+    question: "시스템의 성능 분석 및 병목 현상을 파악하는데 사용되는 도구는?",
+    options: [
+      "컴파일러",
+      "프로파일러",
+      "인터프리터",
+      "에뮬레이터"
+    ],
+    answer: 2,
+    explanation: "프로파일러는 프로그램의 실행 시간, 자원 사용량 등을 분석해 병목 지점을 찾는 데 사용된다."
+  },
+  {
+    number: 52,
+    question: "운영체제에서 다중 프로그래밍 환경의 장점으로 옳은 것은?",
+    options: [
+      "응답 시간이 증가한다",
+      "CPU 사용률이 감소한다",
+      "시스템 자원을 효율적으로 사용할 수 있다",
+      "하나의 작업만 처리할 수 있다"
+    ],
+    answer: 3,
+    explanation: "다중 프로그래밍은 여러 작업을 동시에 처리함으로써 시스템 자원의 활용도를 높인다."
+  },
+  {
+    number: 53,
+    question: "다음 중 객체지향 프로그래밍의 특성이 아닌 것은?",
+    options: [
+      "캡슐화",
+      "상속",
+      "절차화",
+      "다형성"
+    ],
+    answer: 3,
+    explanation: "절차화는 절차지향 프로그래밍의 개념이며, 객체지향의 특성은 아니다."
+  },
+  {
+    number: 54,
+    question: "다음 중 전송 오류를 검출하는 방식이 아닌 것은?",
+    options: [
+      "패리티 검사",
+      "CRC",
+      "해밍 코드",
+      "라우팅"
+    ],
+    answer: 4,
+    explanation: "라우팅은 데이터의 경로를 결정하는 기술로, 오류 검출 방식이 아니다."
+  },
+  {
+    number: 55,
+    question: "OSI 7계층에서 세션 계층의 주요 기능은?",
+    options: [
+      "논리적 주소 지정",
+      "응용 서비스 제공",
+      "전송 오류 제어",
+      "대화 제어 및 동기화"
+    ],
+    answer: 4,
+    explanation: "세션 계층은 통신 양 끝 단의 세션을 설정, 유지 및 종료하며 동기화를 관리한다."
+  },
+  {
+    number: 56,
+    question: "프로그래밍 언어 중 기계어와 가장 가까운 언어는?",
+    options: [
+      "어셈블리어",
+      "고급언어",
+      "스크립트 언어",
+      "자연어"
+    ],
+    answer: 1,
+    explanation: "어셈블리어는 기계어에 매우 근접한 저급 언어이다."
+  },
+  {
+    number: 57,
+    question: "DBMS의 트랜잭션 특성이 아닌 것은?",
+    options: [
+      "원자성",
+      "일관성",
+      "독립성",
+      "가변성"
+    ],
+    answer: 4,
+    explanation: "트랜잭션의 4대 특성은 ACID (원자성, 일관성, 독립성, 지속성)이다."
+  },
+  {
+    number: 58,
+    question: "다음 중 하드웨어에 속하지 않는 것은?",
+    options: [
+      "프린터",
+      "운영체제",
+      "하드 디스크",
+      "마우스"
+    ],
+    answer: 2,
+    explanation: "운영체제는 소프트웨어에 해당한다."
+  },
+  {
+    number: 59,
+    question: "IP 주소에서 클래스 A의 기본 서브넷 마스크는?",
+    options: [
+      "255.255.255.0",
+      "255.255.0.0",
+      "255.0.0.0",
+      "255.255.255.255"
+    ],
+    answer: 3,
+    explanation: "클래스 A는 네트워크/호스트 구분이 8비트/24비트로 되어 있으므로 서브넷 마스크는 255.0.0.0이다."
+  },
+  {
+    number: 60,
+    question: "데이터베이스에서 중복을 최소화하고 이상 현상을 제거하기 위한 과정은?",
+    options: [
+      "트랜잭션",
+      "정규화",
+      "클러스터링",
+      "암호화"
+    ],
+    answer: 2,
+    explanation: "정규화는 데이터 중복과 이상 현상을 방지하기 위한 설계 기법이다."
+  },
+  {
+    number: 61,
+    question: "SQL에서 데이터를 검색하기 위한 명령어는?",
+    options: [
+      "INSERT",
+      "DELETE",
+      "UPDATE",
+      "SELECT"
+    ],
+    answer: 4,
+    explanation: "SELECT 문은 데이터베이스에서 원하는 데이터를 조회할 때 사용된다."
+  },
+  {
+    number: 62,
+    question: "2진수 1101을 10진수로 변환하면?",
+    options: [
+      "11",
+      "13",
+      "14",
+      "15"
+    ],
+    answer: 2,
+    explanation: "2^3 + 2^2 + 0 + 2^0 = 8 + 4 + 0 + 1 = 13"
+  },
+  {
+    number: 63,
+    question: "프로그래밍에서 '반복문'이 아닌 것은?",
+    options: [
+      "for",
+      "while",
+      "do-while",
+      "switch"
+    ],
+    answer: 4,
+    explanation: "switch 문은 조건 분기문이며, 반복문이 아니다."
+  },
+  {
+    number: 64,
+    question: "전가산기(Full Adder)의 입력 개수는?",
+    options: [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    answer: 3,
+    explanation: "전가산기는 두 비트와 이전 자리에서 올라온 캐리 입력 총 3개의 입력을 가진다."
+  },
+  {
+    number: 65,
+    question: "웹 페이지를 구성하는 기본 마크업 언어는?",
+    options: [
+      "HTTP",
+      "HTML",
+      "XML",
+      "FTP"
+    ],
+    answer: 2,
+    explanation: "HTML은 웹 페이지의 구조와 콘텐츠를 작성하는 데 사용되는 마크업 언어이다."
+  },
+  {
+    number: 66,
+    question: "운영체제에서 '프로세스'에 대한 설명으로 옳은 것은?",
+    options: [
+      "컴파일된 프로그램 그 자체",
+      "사용자의 명령어",
+      "실행 중인 프로그램",
+      "하드웨어 제어 장치"
+    ],
+    answer: 3,
+    explanation: "프로세스는 실행 중인 프로그램으로, 메모리와 자원을 할당받는다."
+  },
+  {
+    number: 67,
+    question: "컴퓨터 내부에서 데이터를 처리하는 기본 단위는?",
+    options: [
+      "바이트",
+      "비트",
+      "워드",
+      "레코드"
+    ],
+    answer: 2,
+    explanation: "비트는 0 또는 1의 두 가지 값을 표현할 수 있는 최소 단위이다."
+  },
+  {
+    number: 68,
+    question: "TCP/IP 계층 중 데이터의 경로를 결정하는 계층은?",
+    options: [
+      "응용 계층",
+      "전송 계층",
+      "인터넷 계층",
+      "네트워크 접근 계층"
+    ],
+    answer: 3,
+    explanation: "인터넷 계층은 IP 주소를 기반으로 최적의 경로를 결정한다."
+  },
+  {
+    number: 69,
+    question: "파일을 압축하는 주된 목적은?",
+    options: [
+      "보안 강화",
+      "크기 줄이기",
+      "속도 향상",
+      "파일 복사"
+    ],
+    answer: 2,
+    explanation: "압축은 저장 공간을 줄이고 전송 효율성을 높이기 위한 것이다."
+  },
+  {
+    number: 70,
+    question: "다음 중 객체지향의 4대 특성이 아닌 것은?",
+    options: [
+      "캡슐화",
+      "상속",
+      "동기화",
+      "다형성"
+    ],
+    answer: 3,
+    explanation: "동기화는 멀티스레드나 병렬 처리 관련 용어이며 객체지향의 핵심 개념은 아니다."
+  },
+  {
+    number: 71,
+    question: "프로그램을 실행할 때 사용되는 일시적인 데이터 저장 공간은?",
+    options: [
+      "ROM",
+      "RAM",
+      "Cache",
+      "Hard Disk"
+    ],
+    answer: 2,
+    explanation: "RAM은 프로그램이 실행 중일 때 데이터를 일시적으로 저장하는 공간이다."
+  },
+  {
+    number: 72,
+    question: "OSI 7계층에서 '세션 계층'의 주요 역할은?",
+    options: [
+      "논리적 주소 지정",
+      "데이터 압축",
+      "통신 세션의 설정, 유지, 종료",
+      "물리적 연결"
+    ],
+    answer: 3,
+    explanation: "세션 계층은 송수신 간의 연결(세션)을 설정하고 관리하며 종료하는 역할을 한다."
+  },
+  {
+    number: 73,
+    question: "소프트웨어 생명 주기에서 '유지보수' 단계의 주요 활동은?",
+    options: [
+      "요구사항 정의",
+      "설계 명세",
+      "버그 수정 및 기능 개선",
+      "테스트 계획 수립"
+    ],
+    answer: 3,
+    explanation: "유지보수 단계에서는 오류 수정, 성능 개선, 기능 추가 등의 작업이 수행된다."
+  },
+  {
+    number: 74,
+    question: "프로그래밍 언어 중 인터프리터 방식의 언어는?",
+    options: [
+      "C",
+      "Java",
+      "Python",
+      "C++"
+    ],
+    answer: 3,
+    explanation: "Python은 인터프리터 방식으로 한 줄씩 해석하며 실행된다."
+  },
+  {
+    number: 75,
+    question: "소프트웨어 공학에서 '모듈화'의 장점이 아닌 것은?",
+    options: [
+      "재사용성 향상",
+      "유지보수 용이",
+      "복잡성 증가",
+      "이해도 향상"
+    ],
+    answer: 3,
+    explanation: "모듈화는 프로그램을 나누어 복잡성을 줄이고 관리하기 쉽게 만든다."
+  },
+  {
+    number: 76,
+    question: "인터넷 주소인 URL의 구성 요소에 해당하지 않는 것은?",
+    options: [
+      "프로토콜",
+      "도메인",
+      "포트 번호",
+      "MAC 주소"
+    ],
+    answer: 4,
+    explanation: "MAC 주소는 네트워크 카드 고유 식별자이며 URL 구성 요소가 아니다."
+  },
+  {
+    number: 77,
+    question: "SQL에서 테이블의 구조를 변경할 때 사용하는 명령어는?",
+    options: [
+      "SELECT",
+      "UPDATE",
+      "ALTER",
+      "INSERT"
+    ],
+    answer: 3,
+    explanation: "ALTER 문은 테이블에 컬럼 추가/삭제 등 구조 변경에 사용된다."
+  },
+  {
+    number: 78,
+    question: "보안 공격 중 사용자의 입력값을 조작하여 SQL 명령을 변경하는 기법은?",
+    options: [
+      "DDoS",
+      "XSS",
+      "SQL Injection",
+      "Phishing"
+    ],
+    answer: 3,
+    explanation: "SQL Injection은 쿼리 조작을 통해 비정상적인 데이터 접근을 유도하는 공격이다."
+  },
+  {
+    number: 79,
+    question: "데이터베이스에서 중복 데이터를 방지하기 위한 개념은?",
+    options: [
+      "분산 처리",
+      "중복성",
+      "정규화",
+      "동기화"
+    ],
+    answer: 3,
+    explanation: "정규화는 데이터 중복을 줄이고 무결성을 유지하기 위한 과정이다."
+  },
+  {
+    number: 80,
+    question: "클라우드 컴퓨팅 서비스 모델 중 사용자가 인프라를 직접 관리하지 않고 애플리케이션만 사용하는 모델은?",
+    options: [
+      "IaaS",
+      "PaaS",
+      "SaaS",
+      "DaaS"
+    ],
+    answer: 3,
+    explanation: "SaaS는 소프트웨어를 서비스 형태로 제공받아 설치 없이 사용하는 방식이다."
+  },
+  {
+    number: 81,
+    question: "운영체제에서 교착 상태(Deadlock)의 발생 조건으로 볼 수 없는 것은?",
+    options: [
+      "상호 배제",
+      "점유와 대기",
+      "비선점",
+      "무한 루프"
+    ],
+    answer: 4,
+    explanation: "무한 루프는 교착 상태의 발생 조건이 아니며, 논리 오류로 인한 무한 반복이다."
+  },
+  {
+    number: 82,
+    question: "이진수 1101을 10진수로 변환하면?",
+    options: [
+      "11",
+      "12",
+      "13",
+      "14"
+    ],
+    answer: 3,
+    explanation: "2³+2²+0+1 = 8+4+0+1 = 13이므로 13이다."
+  },
+  {
+    number: 83,
+    question: "컴퓨터 내부에서 명령어를 해석하고 실행하는 장치는?",
+    options: [
+      "ALU",
+      "CU",
+      "RAM",
+      "ROM"
+    ],
+    answer: 2,
+    explanation: "CU(Control Unit)는 명령어 해석 및 실행 제어를 담당한다."
+  },
+  {
+    number: 84,
+    question: "OSI 7계층 중 물리적인 전송 매체를 다루는 계층은?",
+    options: [
+      "응용 계층",
+      "전송 계층",
+      "네트워크 계층",
+      "물리 계층"
+    ],
+    answer: 4,
+    explanation: "물리 계층은 전기적 신호, 케이블, 커넥터 등 물리 매체를 다룬다."
+  },
+  {
+    number: 85,
+    question: "운영체제에서 다중 프로그래밍의 주요 목적은?",
+    options: [
+      "보안 향상",
+      "CPU 이용률 향상",
+      "전력 절감",
+      "에러 검출"
+    ],
+    answer: 2,
+    explanation: "다중 프로그래밍은 CPU의 유휴 시간을 줄여 자원을 효율적으로 사용하게 한다."
+  },
+  {
+    number: 86,
+    question: "데이터베이스에서 트랜잭션의 특성이 아닌 것은?",
+    options: [
+      "Atomicity",
+      "Consistency",
+      "Volatility",
+      "Durability"
+    ],
+    answer: 3,
+    explanation: "Volatility(휘발성)는 트랜잭션 특성(ACID)에 포함되지 않는다."
+  },
+  {
+    number: 87,
+    question: "프로그래밍에서 반복되는 작업을 하나로 묶어 호출할 수 있도록 만든 것은?",
+    options: [
+      "클래스",
+      "배열",
+      "함수",
+      "변수"
+    ],
+    answer: 3,
+    explanation: "함수는 반복되는 코드를 하나로 묶어 재사용할 수 있도록 한다."
+  },
+  {
+    number: 88,
+    question: "HTML 문서에서 문서의 제목을 정의하는 태그는?",
+    options: [
+      "<head>",
+      "<title>",
+      "<meta>",
+      "<header>"
+    ],
+    answer: 2,
+    explanation: "<title> 태그는 브라우저 탭에 표시될 제목을 정의한다."
+  },
+  {
+    number: 89,
+    question: "LAN(Local Area Network)의 특징이 아닌 것은?",
+    options: [
+      "좁은 지역에서의 네트워크",
+      "고속 전송 속도",
+      "비용이 높음",
+      "자원 공유가 용이함"
+    ],
+    answer: 3,
+    explanation: "LAN은 일반적으로 설치 비용이 저렴한 편이다."
+  },
+  {
+    number: 90,
+    question: "Python에서 리스트의 길이를 구하는 함수는?",
+    options: [
+      "length()",
+      "count()",
+      "size()",
+      "len()"
+    ],
+    answer: 4,
+    explanation: "len() 함수는 리스트, 문자열 등의 길이를 구할 때 사용된다."
+  },
+  {
+    number: 91,
+    question: "트랜잭션에서 모든 작업이 정상적으로 완료되었을 때 영구적으로 반영하는 작업은?",
+    options: [
+      "롤백(Rollback)",
+      "커밋(Commit)",
+      "잠금(Locking)",
+      "인덱스(Index)"
+    ],
+    answer: 2,
+    explanation: "커밋은 트랜잭션이 성공적으로 끝났을 때 데이터를 영구 저장한다."
+  },
+  {
+    number: 92,
+    question: "CPU가 여러 개의 프로세스를 번갈아가며 실행하는 방식은?",
+    options: [
+      "다중 프로그래밍",
+      "시분할 시스템",
+      "일괄 처리 시스템",
+      "실시간 시스템"
+    ],
+    answer: 2,
+    explanation: "시분할 시스템은 CPU 시간을 나누어 여러 사용자나 프로세스가 사용하는 시스템이다."
+  },
+  {
+    number: 93,
+    question: "소프트웨어 공학에서 유지보수 유형이 아닌 것은?",
+    options: [
+      "완전 유지보수",
+      "수정 유지보수",
+      "적응 유지보수",
+      "완전 예방 유지보수"
+    ],
+    answer: 4,
+    explanation: "유지보수는 수정, 적응, 완전 등으로 구분되며 '완전 예방 유지보수'는 일반적인 용어가 아니다."
+  },
+  {
+    number: 94,
+    question: "HTML에서 이미지 파일을 삽입할 때 사용하는 태그는?",
+    options: [
+      "<img>",
+      "<image>",
+      "<src>",
+      "<pic>"
+    ],
+    answer: 1,
+    explanation: "<img> 태그는 이미지 파일을 삽입할 때 사용한다."
+  },
+  {
+    number: 95,
+    question: "관계형 데이터베이스에서 튜플(Tuple)은 무엇을 의미하는가?",
+    options: [
+      "테이블",
+      "컬럼",
+      "레코드",
+      "스키마"
+    ],
+    answer: 3,
+    explanation: "튜플은 데이터베이스 테이블의 한 행(레코드)을 의미한다."
+  },
+  {
+    number: 96,
+    question: "운영체제에서 문맥 교환(Context Switching)이 일어나는 시점은?",
+    options: [
+      "데이터가 전송될 때",
+      "프로세스가 종료될 때",
+      "프로세스가 CPU를 양보할 때",
+      "사용자가 프로그램을 실행할 때"
+    ],
+    answer: 3,
+    explanation: "문맥 교환은 CPU를 다른 프로세스에게 넘길 때 발생한다."
+  },
+  {
+    number: 97,
+    question: "DBMS의 기능으로 적절하지 않은 것은?",
+    options: [
+      "데이터 저장",
+      "데이터 삭제",
+      "데이터 암호화",
+      "데이터 처리"
+    ],
+    answer: 3,
+    explanation: "DBMS는 보통 데이터 암호화를 직접적으로 수행하지 않으며, 별도의 보안 모듈이 필요하다."
+  },
+  {
+    number: 98,
+    question: "정보보호 3요소에 해당하지 않는 것은?",
+    options: [
+      "기밀성",
+      "무결성",
+      "가용성",
+      "편의성"
+    ],
+    answer: 4,
+    explanation: "정보보호의 3요소는 기밀성, 무결성, 가용성이다. 편의성은 포함되지 않는다."
+  },
+  {
+    number: 99,
+    question: "C언어에서 문자열을 저장하는 표준 함수는?",
+    options: [
+      "gets()",
+      "puts()",
+      "scanf()",
+      "strcpy()"
+    ],
+    answer: 4,
+    explanation: "strcpy() 함수는 문자열을 복사하여 저장하는 데 사용된다."
+  },
+  {
+    number: 100,
+    question: "프로그래밍 언어에서 반복문의 종류가 아닌 것은?",
+    options: [
+      "for",
+      "while",
+      "switch",
+      "do-while"
+    ],
+    answer: 3,
+    explanation: "switch는 조건문이며, 반복문은 아니다."
+  },
+  {
+    number: 101,
+    question: "OSI 7계층 중 전송 계층(Transport Layer)의 주요 기능은?",
+    options: [
+      "라우팅",
+      "데이터 암호화",
+      "종단 간 연결 제공",
+      "물리적 전송"
+    ],
+    answer: 3,
+    explanation: "전송 계층은 두 시스템 간의 종단 간 연결 및 신뢰성 있는 데이터 전송을 담당한다."
+  },
+  {
+    number: 102,
+    question: "파이프라인 처리 방식의 장점으로 옳지 않은 것은?",
+    options: [
+      "처리 속도 향상",
+      "하드웨어 소모 증가",
+      "병렬 처리 가능",
+      "작업 분할 가능"
+    ],
+    answer: 2,
+    explanation: "파이프라인은 하드웨어 효율을 높이기 위한 방식으로 하드웨어 소모가 반드시 증가하진 않는다."
+  },
+  {
+    number: 103,
+    question: "UNIX에서 디렉터리 변경 명령어는?",
+    options: [
+      "cd",
+      "ls",
+      "mkdir",
+      "pwd"
+    ],
+    answer: 1,
+    explanation: "cd는 현재 작업 디렉토리를 변경하는 명령어이다."
+  },
+  {
+    number: 104,
+    question: "정보보호의 원칙 중 '권한 있는 사용자만 접근할 수 있어야 한다'는 무엇인가?",
+    options: [
+      "기밀성",
+      "무결성",
+      "가용성",
+      "신뢰성"
+    ],
+    answer: 1,
+    explanation: "기밀성(confidentiality)은 인가된 사용자만 정보에 접근할 수 있도록 보장하는 것이다."
+  },
+  {
+    number: 105,
+    question: "논리 회로에서 AND 게이트의 출력은 언제 1이 되는가?",
+    options: [
+      "모든 입력이 1일 때",
+      "하나라도 입력이 1일 때",
+      "모든 입력이 0일 때",
+      "입력 중 하나가 0일 때"
+    ],
+    answer: 1,
+    explanation: "AND 게이트는 모든 입력이 1일 때만 출력이 1이 된다."
+  },
+  {
+    number: 106,
+    question: "시스템 소프트웨어에 해당하지 않는 것은?",
+    options: [
+      "운영체제",
+      "컴파일러",
+      "DBMS",
+      "스프레드시트"
+    ],
+    answer: 4,
+    explanation: "스프레드시트는 응용 소프트웨어에 해당한다."
+  },
+  {
+    number: 107,
+    question: "응용 계층(Application Layer)의 대표적인 프로토콜은?",
+    options: [
+      "TCP",
+      "IP",
+      "HTTP",
+      "UDP"
+    ],
+    answer: 3,
+    explanation: "HTTP는 응용 계층에서 동작하는 대표적인 프로토콜이다."
+  },
+  {
+    number: 108,
+    question: "기억 장치의 계층 구조에서 가장 빠른 것은?",
+    options: [
+      "레지스터",
+      "캐시 메모리",
+      "RAM",
+      "하드디스크"
+    ],
+    answer: 1,
+    explanation: "레지스터는 CPU 내부에 존재하며 가장 빠른 기억 장치이다."
+  },
+  {
+    number: 109,
+    question: "다음 중 운영체제의 목적이 아닌 것은?",
+    options: [
+      "프로그램 실행 제어",
+      "하드웨어 추상화",
+      "데이터 암호화",
+      "자원 관리"
+    ],
+    answer: 3,
+    explanation: "데이터 암호화는 보안 소프트웨어의 주요 기능이며, 운영체제의 기본 목적은 아니다."
+  },
+  {
+    number: 110,
+    question: "다음 중 객체지향 프로그래밍의 특징이 아닌 것은?",
+    options: [
+      "상속",
+      "캡슐화",
+      "추상화",
+      "선형화"
+    ],
+    answer: 4,
+    explanation: "선형화는 객체지향의 특징이 아니며, 나머지는 핵심 개념이다."
+  },
+  {
+    number: 111,
+    question: "SQL에서 데이터를 검색하기 위한 명령어는?",
+    options: [
+      "INSERT",
+      "DELETE",
+      "UPDATE",
+      "SELECT"
+    ],
+    answer: 4,
+    explanation: "SELECT는 테이블에서 데이터를 조회할 때 사용하는 명령어이다."
+  },
+  {
+    number: 112,
+    question: "UDP 프로토콜의 특징은?",
+    options: [
+      "신뢰성 보장",
+      "연결 지향",
+      "오버헤드 적음",
+      "흐름 제어 있음"
+    ],
+    answer: 3,
+    explanation: "UDP는 연결을 설정하지 않고, 신속한 전송을 위해 오버헤드가 적다."
+  },
+  {
+    number: 113,
+    question: "소프트웨어 개발 생명주기(SDLC)의 첫 번째 단계는?",
+    options: [
+      "설계",
+      "요구사항 분석",
+      "구현",
+      "테스트"
+    ],
+    answer: 2,
+    explanation: "요구사항 분석은 사용자의 요구를 파악하는 SDLC의 시작 단계이다."
+  },
+  {
+    number: 114,
+    question: "다음 중 2진수 1010의 10진수 값은?",
+    options: [
+      "10",
+      "12",
+      "8",
+      "14"
+    ],
+    answer: 1,
+    explanation: "2진수 1010은 8+0+2+0 = 10에 해당한다."
+  }
+
+
+
+
+
+
+
+
+
+];
+
+    const container = document.getElementById("quiz-container");
+
+    // Fisher–Yates Shuffle
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    // 퀴즈 순서 무작위화
+    shuffleArray(quizData);
+
+    quizData.forEach(q => {
+      const div = document.createElement("div");
+      div.className = "question";
+      div.dataset.answer = q.answer;
+      div.dataset.explanation = q.explanation;
+
+      const h3 = document.createElement("h3");
+      h3.innerText = `${q.number}. ${q.question}`;
+
+      const optionsDiv = document.createElement("div");
+      optionsDiv.className = "options";
+
+      q.options.forEach((opt, idx) => {
+        const label = document.createElement("label");
+        const radio = document.createElement("input");
+        radio.type = "radio";
+        radio.name = `q${q.number}`;
+        radio.value = (idx + 1).toString(); // ✅ value 꼭 설정
+        label.appendChild(radio);
+        label.append(` ${String.fromCharCode(9312 + idx)} ${opt}`);
+        optionsDiv.appendChild(label);
+      });
+
+      const btn = document.createElement("button");
+      btn.innerText = "정답 확인";
+      btn.onclick = function () {
+      const radios = div.querySelectorAll('input[type=radio]');
+      const answerDiv = div.querySelector('.answer');
+      let selectedIdx = -1;
+
+      radios.forEach((radio, idx) => {
+        if (radio.checked) selectedIdx = idx + 1;
+      });
+
+      radios.forEach((radio, idx) => {
+        const label = radio.parentElement;
+        label.classList.remove('correct', 'wrong', 'right');
+
+        if ((idx + 1).toString() === div.dataset.answer) {
+          if (selectedIdx.toString() === div.dataset.answer) {
+            label.style.color = 'blue'; // 정답을 맞춘 경우 파란색
+          } else {
+            label.style.color = 'red'; // 틀린 경우 정답만 빨간색
+          }
+        } else {
+          label.style.color = ''; // 다른 보기는 색 없앰
+        }
+      });
+
+      if (answerDiv.style.display === 'none' || answerDiv.style.display === '') {
+        answerDiv.innerHTML = `<strong>정답:</strong> ${div.dataset.answer}번<br><em>${div.dataset.explanation}</em>`;
+        answerDiv.style.display = 'block';
+      } else {
+        answerDiv.style.display = 'none';
+      }
+    };
+
+      const answerDiv = document.createElement("div");
+      answerDiv.className = "answer";
+
+      div.appendChild(h3);
+      div.appendChild(optionsDiv);
+      div.appendChild(btn);
+      div.appendChild(answerDiv);
+
+      container.appendChild(div);
+    });
+
+    // ✅ 결과보기 버튼 클릭 시 전체 채점
+    document.getElementById("check-all").addEventListener("click", function () {
+      let score = 0;
+      quizData.forEach(q => {
+        const selected = document.querySelector(`input[name="q${q.number}"]:checked`);
+        if (selected && selected.value === q.answer.toString()) {
+          score++;
+        }
+      });
+      document.getElementById("score").textContent = `당신의 점수는 ${score} / ${quizData.length} 입니다.`;
+    });
+  </script>
+</body>
+</html>
