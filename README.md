@@ -58,7 +58,7 @@
 
 ## 🧑‍💻 제작자
 
-- 👨‍💻 [태진 깃허브](https://github.com/TaeJinKim0930)]
+- 👨‍💻 [[태진 깃허브](https://github.com/TaeJinKim0930)]
 - ✉️ Contact: [tjmax0930@gmail..com]
 
 ---
