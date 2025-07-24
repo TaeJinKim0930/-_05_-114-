@@ -3,6 +3,9 @@
 📚 **정보처리기사 필기시험 대비**를 위한 HTML 기반 퀴즈 시스템입니다.  
 문제는 JSON 데이터로 관리되며, 퀴즈를 풀고 정답을 확인하고 점수를 자동 채점할 수 있습니다.
 
+<a href="./quiz_정보처리기사.html">문제 풀러가기</a>
+
+## !하단 이미지는 예시 입니다!
 <img width="887" height="778" alt="image" src="https://github.com/user-attachments/assets/c1869c1b-1dbd-4722-bb09-55d89ddb4d2e" />
 
 
