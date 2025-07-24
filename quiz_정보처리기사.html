@@ -1409,12 +1409,13 @@
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
       }
+      return array;
     }
 
     // 퀴즈 순서 무작위화
-    shuffleArray(quizData);
+    const shuffledQuizData = shuffleArray([...quizData]);
 
-    quizData.forEach(q => {
+    shuffledQuizData.forEach(q => {
       const div = document.createElement("div");
       div.className = "question";
       div.dataset.answer = q.answer;
