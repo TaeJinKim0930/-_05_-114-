@@ -1,11 +1,17 @@
-# 정보처리기사 퀴즈 웹페이지
+# 정보처리기사 & NCS 전산직 퀴즈 웹페이지
 
-📚 **정보처리기사 필기시험 대비**를 위한 HTML 기반 퀴즈 시스템입니다.  
+📚 **정보처리기사 및 NCS 필기시험 대비**를 위한 HTML 기반 퀴즈 시스템입니다.  
 문제는 JSON 데이터로 관리되며, 퀴즈를 풀고 정답을 확인하고 점수를 자동 채점할 수 있습니다.
 
 <p align="center">
   <a href="./quiz_정보처리기사.html" style="font-size: 18px; font-weight: bold;">
-    📝 <strong>👉 문제 풀러가기</strong>
+    📝 <strong>👉 정보처리기사 문제 풀러가기</strong>
+  </a>
+</p>
+
+<p align="center">
+  <a href="./NCS_cs_quiz.html" style="font-size: 18px; font-weight: bold;">
+    📝 <strong>👉 NCS 전산직 문제 풀러가기</strong>
   </a>
 </p>
 
