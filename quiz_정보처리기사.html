@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <title>정보처리기사 퀴즈</title>
   <h1>정보처리기사 퀴즈 </h1>
-  <h2>새로고침 시 순서가 바뀌어요! 문제의 내용과 번호는 중복이 될 수 있습니다! </h2>
+  <h2>새로고침 시 순서가 바뀌어요!</h2>
+  <button id="toggle-dark">다크모드로 보기</button>
+  <h3></h3>
   <style>
     body { font-family: sans-serif; background: #f5f5f5; padding: 20px; }
     .question { background: white; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 20px; padding: 16px; }
@@ -14,6 +16,16 @@
     .correct { color: red; font-weight: bold; }
     #score { font-size: 20px; font-weight: bold; margin-top: 30px; }
     button { margin-top: 10px; padding: 6px 12px; cursor: pointer; }
+
+    /* 다크모드 추가 */
+    .dark-mode {
+      background: #1e1e1e;
+      color: #f5f5f5;
+    }
+    .dark-mode .question {
+      background: #2c2c2c;
+      border-color: #666;
+    }
   </style>
 </head>
 <body>
@@ -1404,6 +1416,11 @@
 ];
 
     const container = document.getElementById("quiz-container");
+
+    // 다크모드 토글 동작
+    document.getElementById("toggle-dark").addEventListener("click", function () {
+      document.body.classList.toggle("dark-mode");
+    });
 
     // Fisher–Yates Shuffle
     function shuffleArray(array) {
